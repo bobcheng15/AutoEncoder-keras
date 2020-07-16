@@ -17,13 +17,13 @@ class AutoEncoder_en():
         self.model = tf.keras.models.Sequential([
             tf.keras.layers.Conv2D(CONV1_FILTERS, 8, [4, 4], activation=None),
             tf.keras.layers.BatchNormalization(),
-            tf.keras.layers.Relu(),
+            tf.keras.layers.ReLU(),
             tf.keras.layers.Conv2D(CONV1_FILTERS, 8, [4, 4], activation=None),
             tf.keras.layers.BatchNormalization(),
-            tf.keras.layers.Relu(),
+            tf.keras.layers.ReLU(),
             tf.keras.layers.Conv2D(CONV1_FILTERS, 8, [4, 4], activation=None),
             tf.keras.layers.BatchNormalization(),
-            tf.keras.layers.Relu(), 
+            tf.keras.layers.ReLU(), 
         ])
 
 #################################################################
@@ -35,13 +35,13 @@ class AutoEncoder_de():
         self.model = tf.keras.models.Sequential([
             tf.keras.layers.Conv2DTranspose(CONV1_FILTERS, 8, [4, 4], activation=None),
             tf.keras.layers.BatchNormalization(),
-            tf.keras.layers.Relu(),
+            tf.keras.layers.ReLU(),
             tf.keras.layers.Conv2DTranspose(CONV1_FILTERS, 8, [4, 4], activation=None),
             tf.keras.layers.BatchNormalization(),
-            tf.keras.layers.Relu(),
+            tf.keras.layers.ReLU(),
             tf.keras.layers.Conv2DTranspose(CONV1_FILTERS, 8, [4, 4], activation=None),
             tf.keras.layers.BatchNormalization(),
-            tf.keras.layers.Relu(), 
+            tf.keras.layers.ReLU(), 
         ])
 
 class AutoEncoder():
@@ -49,8 +49,8 @@ class AutoEncoder():
         self.encoder = AutoEncoder_en
         self.decoder = AutoEncoder_de
         self.model = tf.keras.models.Sequential([
-            self.encoder,
-            self.decoder,
+            self.encoder.model,
+            self.decoder.model,
         ])
 
 AutoEncoder()
