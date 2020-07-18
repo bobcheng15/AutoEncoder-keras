@@ -46,11 +46,10 @@ class AutoEncoder_de():
 
 class AutoEncoder():
     def __init__(self):
-        self.encoder = AutoEncoder_en
-        self.decoder = AutoEncoder_de
+        self.encoder = AutoEncoder_en()
+        self.decoder = AutoEncoder_de()
         self.model = tf.keras.models.Sequential([
             self.encoder.model,
             self.decoder.model,
         ])
 
-AutoEncoder()
