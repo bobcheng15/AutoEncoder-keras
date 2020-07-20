@@ -44,7 +44,7 @@ class AutoEncoder_de():
             tf.keras.layers.ReLU(), 
         ])
 
-class AutoEncoder():
+class AutoEncoder(lr = 0.001):
     def __init__(self):
         self.encoder = AutoEncoder_en()
         self.decoder = AutoEncoder_de()
@@ -52,4 +52,11 @@ class AutoEncoder():
             self.encoder.model,
             self.decoder.model,
         ])
+        self.optimizer = tf.keras.optimizers.Adam(learning_rate=lr, beta_1=0.95)
+    
+    def l2loss(self, y_true, y_pred):
+        return (y_true - y_pred) ** 2
 
+        self.model.compile(optimizer=self.optimizer, loss=self.l2loss, metrics=['accuracy'])
+
+AutoEncoder()
