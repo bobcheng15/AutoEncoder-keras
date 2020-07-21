@@ -47,6 +47,9 @@ def train(AE, train_data, valid_data):
     print("training...")
     for i in range (0, FLAGS.epoch):
         start, end = 0, FLAGS.batch
+        if i % 100 == 0:
+            tf.keras.models.save_model(AE.encoder, "checkPoints/encoder", save_format="h5")
+            tf.keras.models.save_model(AE.decoder, "checkPoints/decoder", save_format="h5")
         while start < 20000:
             AE.model.fit(train_data[start:end], train_data[start:end], batch_size=FLAGS.batch, verbose=1)
             start += FLAGS.batch
