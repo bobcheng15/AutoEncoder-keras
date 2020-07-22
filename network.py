@@ -39,7 +39,7 @@ class AutoEncoder_de():
             tf.keras.layers.Conv2DTranspose(CONV1_FILTERS, 4, [2, 2], padding="valid", activation=None),
             tf.keras.layers.BatchNormalization(),
             tf.keras.layers.ReLU(),
-            tf.keras.layers.Conv2DTranspose(3, 8, [4, 4], padding="valid", activation=None),
+            tf.keras.layers.Conv2DTranspose(1, 8, [4, 4], padding="valid", activation=None),
             tf.keras.layers.BatchNormalization(),
             tf.keras.layers.ReLU(), 
         ])
