@@ -22,6 +22,15 @@ tf.compat.v1.flags.DEFINE_integer("inference_version", -1, "The version for infe
 tf.compat.v1.flags.DEFINE_integer("val_num", 10000, "number of validation images.")
 
 FLAGS = tf.compat.v1.flags.FLAGS
+
+def process_frame(frame, shape=(84, 84)):
+    frame = frame.astype(np.uint8)  # cv2 requires np.uint8, other dtypes will not work
+    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+    frame = frame[34:34+160, :160]  # crop image
+    frame = cv2.resize(frame, shape, interpolation=cv2.INTER_NEAREST)
+    frame = frame.reshape((*shape, 1))
+    #print(frame.shape)
+    return frame
 def get_data(is_train):
     output_img = [] # (4-d tensor) shape : size, w, h, 3
     if is_train:
@@ -36,11 +45,11 @@ def get_data(is_train):
             print("loading {:d}-th img".format(i))
         path = directory + '/{:06d}.png'.format(i)
         img = cv2.imread(path)
-        img = cv2.resize(img, (84, 84))   
+        img = process_frame(img)
+        output_img.append(img/255)
         #print(img.shape)
-        output_img.append(img/255.0)
-    output_img = np.array(output_img)
-
+    output_img = np.array(output_img, dtype=np.float32)
+    print(output_img.shape)
     return output_img
 
 def train(AE, train_data, valid_data):
@@ -48,7 +57,7 @@ def train(AE, train_data, valid_data):
     for i in range (0, int(FLAGS.epoch/10)):
         #start, end = 0, FLAGS.batch * 20i
         validate(AE, valid_data)
-        #AE.model.save("checkPoint/AE.h5")    
+        AE.model.save("checkPoint/AE_gray.h5")    
         #tf.keras.models.save_model(AE.decoder, "checkPoints/decoder", save_format="h5")
         AE.model.fit(train_data, train_data, epochs=10, batch_size=FLAGS.batch, verbose=1)
 
@@ -60,11 +69,11 @@ def validate(AE, valid_data):
 if __name__ == "__main__":
     AE = network.AutoEncoder()
     AE.init()
-    AE.model.build((None, 84, 84, 3))
+    AE.model.build((None, 84, 84, 1))
     train_data = get_data(True)
     valid_data = get_data(False)
     if FLAGS.restore:
-        loaded = tf.keras.models.load_model("./checkPoint/AE.h5", compile=False)
+        loaded = tf.keras.models.load_model("./checkPoint/AE_gray.h5", compile=False)
         #use this line of code to only load the encoder's weight
         #AE.model.layers[0].set_weights(loaded.layers[0].get_weights())
         AE.model.set_weights(loaded.get_weights())
